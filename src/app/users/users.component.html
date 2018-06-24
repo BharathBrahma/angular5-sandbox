@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<h2 class="mb-3">Users <button (click)="showUserForm = !showUserForm" class="btn btn-dark btn-sm">Add User</button></h2>
+<div class="card card-body mb-3" *ngIf="showUserForm">
+  <h4>Add User</h4>
+  <form #userForm="ngForm" (ngSubmit)="onSubmit(userForm)">
+    <div class="form-group">
+      <label>First Name</label>
+    <input type="text"
+      [(ngModel)]="user.firstname"
+      [ngClass] = "{ 'is-invalid' : userFirstName.errors && userFirstName.touched }"
+      #userFirstName = "ngModel"
+      name="firstname" 
+      id="" 
+      class="form-control"
+      required
+      minlength="2">
+      <div [hidden] = "!userFirstName.errors?.required" class="invalid-feedback">
+        First name is required.
+      </div>
+      <div [hidden]="!userFirstName.errors?.minlength" class="invalid-feedback">
+        Required atleast 2 characters.
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Last Name</label>
+      <input type="text" class="form-control" [(ngModel)]="user.lastname" name="lastname">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" class="form-control" [(ngModel)]="user.email" name="email">
+    </div>
+      <button [disabled]="!userForm.form.valid" class="btn-success btn-block mb-3" (click)="addUser()">Submit</button>
+  </form>
+</div>
+<!--  -->
+<ul class="list-unstyled" *ngIf ="users?.length > 0">
+<li class="card card-body mb-2" [class.bg-light]="!user.isActive" *ngFor="let user of users">
+  <h3>
+    <small>
+      <button *ngIf="user.hide == false" class="btn btn-dark btn-sm" (click)="user.hide = !user.hide" >-</button>
+      <button *ngIf="user.hide == true" class="btn btn-dark btn-sm" (click)="user.hide = !user.hide">+</button>
+    </small>
+  {{ user.firstname }} {{ user.lastname }}
+  </h3>
+      <ul class="list-group" *ngIf="!user.hide && (user.email || user.joined)">
+        <li class="list-group-item">email : {{ user.email}}</li>
+        <li class="list-group-item">Joined : {{ user.joined | date}}</li>
+      </ul>
+  </li>
+</ul>
+
+<h4 *ngIf="user?.length == 0"> No Users.</h4>
